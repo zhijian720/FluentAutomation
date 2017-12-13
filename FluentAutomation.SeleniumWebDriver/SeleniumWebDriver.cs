@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using OpenQA.Selenium.IE;
 
 namespace FluentAutomation
 {
@@ -264,18 +265,22 @@ namespace FluentAutomation
         private static DesiredCapabilities GenerateDesiredCapabilities(Browser browser)
         {
             DesiredCapabilities browserCapabilities = null;
+			DriverOptions option = null;
 
-            switch (browser)
+			switch (browser)
             {
                 case Browser.InternetExplorer:
                 case Browser.InternetExplorer64:
-                    browserCapabilities = DesiredCapabilities.InternetExplorer();
-                    break;
+					option = new InternetExplorerOptions();
+					browserCapabilities = (DesiredCapabilities)option.ToCapabilities();
+					break;
                 case Browser.Firefox:
-                    browserCapabilities = DesiredCapabilities.Firefox();
-                    break;
+					option = new ChromeOptions();
+					browserCapabilities = (DesiredCapabilities)option.ToCapabilities();
+					break;
                 case Browser.Chrome:
-                    browserCapabilities = DesiredCapabilities.Chrome();
+					option = new ChromeOptions();
+					browserCapabilities = (DesiredCapabilities)option.ToCapabilities();
                     break;
                 case Browser.PhantomJs:
                     browserCapabilities = DesiredCapabilities.PhantomJS();
@@ -296,8 +301,9 @@ namespace FluentAutomation
                     throw new FluentException("Selected browser [{0}] not supported. Unable to determine appropriate capabilities.", browser.ToString());
             }
 
-            browserCapabilities.IsJavaScriptEnabled = true;
-            return browserCapabilities;
+			browserCapabilities.SetCapability(CapabilityType.IsJavaScriptEnabled, true);
+		
+			return browserCapabilities;
         }
     }
 }
