@@ -67,8 +67,11 @@ namespace FluentAutomation
 
             var resourceBytes = new byte[(int)resourceStream.Length];
             var tmpPath = Path.Combine(Path.GetTempPath(), outputFileName);
-            resourceStream.Read(resourceBytes, 0, resourceBytes.Length);
-            File.WriteAllBytes(tmpPath, resourceBytes);
+			if (File.Exists(tmpPath))
+			{
+				resourceStream.Read(resourceBytes, 0, resourceBytes.Length);
+				File.WriteAllBytes(tmpPath, resourceBytes);
+			}			
 
             return tmpPath;
         }
